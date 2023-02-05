@@ -1,0 +1,373 @@
+<article>
+
+<p>
+
+: (Launch MySQL from the command prompt). The following message would be displayed:
+
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 8
+Server version: 8.0.26 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2021, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+<p> <b>
+# The MySQL commands are shown in bold;
+
+</p> </b>
+
+<p>
+This module shows how to use the basic MySQL operations on a .csv dataset; The Dataset is players.csv, available on request to sundarb@iima.ac.in;
+</p>
+
+<p> <b>
+mysql> show databases;
+</p></b>
++--------------------+
+| Database           |
++--------------------+
+| classicmodels      |
+| information_schema |
+| mysql              |
+| performance_schema |
+| pets               |
+| sakila             |
+| sys                |
+| world              |
++--------------------+
+8 rows in set (0.19 sec)
+
+</p>
+
+<p><b>
+mysql> create database players_db;
+</p></b>
+
+<p>
+Query OK, 1 row affected (0.04 sec)
+
+</p>
+
+<p> <b>
+mysql> show databases;
+
+</p></b>
+
+<p>
++--------------------+
+| Database           |
++--------------------+
+| classicmodels      |
+| information_schema |
+| mysql              |
+| performance_schema |
+| pets               |
+| players_db         |
+| sakila             |
+| sys                |
+| world              |
++--------------------+
+9 rows in set (0.00 sec)
+</p>
+
+<p><b>
+mysql> use players_db
+
+</p> </b>
+<p>
+Database changed
+
+</p> 
+
+<p> <b>
+mysql> create table player_table3 (
+    -> Playerid int default null,
+    -> FirstName varchar (255) not null,
+    -> LastName varchar (255) not null,
+    -> Age integer,
+    -> BirthDate date not null,
+    -> Height integer,
+    -> Weight integer,
+    -> Nationality varchar (255) not null,
+    -> Club varchar (255) not null,
+    -> Value_eur integer,
+    -> Wage_eur integer,
+    -> Team_position varchar (255) not null
+    -> );
+</p></b>
+
+Query OK, 0 rows affected (0.05 sec)
+
+<p> <b>
+mysql> LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/players.csv'
+    -> into table player_table3
+    -> fields terminated by ','
+    -> optionally enclosed by '"'
+    -> escaped by '"'
+    -> lines terminated by '\n'
+    -> ignore 1 rows;
+
+</p> </b>
+Query OK, 148 rows affected (0.06 sec)
+Records: 148  Deleted: 0  Skipped: 0  Warnings: 0
+
+<p> <b>
+mysql> ### (1) SELECT Statement
+mysql> select * from player_table3; ## (output not shown) ##
+...
+</p> </b>
+
+<p> <b>
+mysql> select FirstName, LastName, Height
+    -> from player_table3;
+
+</p> </b>
++-------------------+------------------+--------+
+| FirstName         | LastName         | Height |
++-------------------+------------------+--------+
+| Lionel Andrés     | Messi            |    170 |
+| Cristiano Ronaldo | dos Santos       |    187 |
+| Neymar            | da Silva         |    175 |
+| Jan               | Oblak            |    188 |
+
+<p> <b>
+
+mysql> ### (2) SELECT DISTINCT Statement
+mysql> select distinct Team_Position from player_table3;
+
+</p> </b>
++---------------+
+| Team_Position |
++---------------+
+| RW            |
+| LW            |
+| CAM           |
+| GK            |
+| LF            |
+| CM            |
+| ST            |
+| CDM           |
+| LM            |
+| RM            |
+| RB            |
+| CF            |
+| CB            |
+| RAM           |
+| LAM           |
++---------------+
+15 rows in set (0.01 sec)
+
+<p> <b>
+
+mysql> ### (3) WHERE clause 
+mysql> select FirstName, LastName, Height
+    -> from player_table3
+    -> where Height > 180;
+
+</p> </b>
++-------------------+------------------+--------+
+| FirstName         | LastName         | Height |
++-------------------+------------------+--------+
+| Cristiano Ronaldo | dos Santos       |    187 |
+| Jan               | Oblak            |    188 |
+| Kevin             | De Bruyne        |    181 |
+
+
+<p> <b>
+mysql> ### (4a) AVG()  function
+
+mysql> select avg(Height)
+    -> from player_table3
+    -> where Club="FC Barcelona";
+
+</p> </b>
++-------------+
+| avg(Height) |
++-------------+
+|    181.2667 |
++-------------+
+1 row in set (0.02 sec)
+
+<p> <b>
+
+mysql> ### (4b) COUNT()  function
+mysql> select count(Playerid)
+    -> from player_table3
+    -> where Club="FC Barcelona";  
+
+</p> </b>
++-----------------+
+| count(Playerid) |
++-----------------+
+|              15 |
++-----------------+
+1 row in set (0.01 sec)
+
+<p> <b>
+mysql> ### (4c) SUM()  function
+
+mysql> ### sum the wage of barcelona players
+mysql> select sum(Wage_eur)  ## no space after “select sum(….
+    -> from player_table3
+    -> where Club = "FC Barcelona";
+
+</p> </b>
++---------------+
+| sum(Wage_eur) |
++---------------+
+|          3945 |
++---------------+
+1 row in set (0.00 sec)
+
+<p> <b>
+
+mysql> ### (5) ORDER BY clause
+mysql> Select FirstName, LastName, Height
+    -> from player_table3
+    -> order by height desc;
+
+</p> </b>
+
++-------------------+------------------+--------+
+| FirstName         | LastName         | Height |
++-------------------+------------------+--------+
+| Thibaut           | Courtois         |    199 |
+| Thibaut           | Courtois         |    199 |
+| Gianluigi         | Donnarumma       |    196 |
+| Ji?í              | Pavlenka         |    196 |
+| Gianluigi         | Donnarumma       |    196 |
+| Ji?í              | Pavlenka         |    196 |
+
+<p> <b>
+
+mysql> ### (6)  AND/OR
+mysql> ### Using And/Or operators
+mysql> select FirstName, LastName, Height, Nationality
+    -> from player_table3
+    -> where Height > 180 and nationality = "FRA"; 
+
+</p> </b>
++-----------+-----------+--------+-------------+
+| FirstName | LastName  | Height | Nationality |
++-----------+-----------+--------+-------------+
+| Paul      | Pogba     |    191 | FRA         |
+| Hugo      | Lloris    |    188 | FRA         |
+| Aymeric   | Laporte   |    189 | FRA         |
+| Karim     | Benzema   |    185 | FRA         |
+| Samuel    | Umtiti    |    182 | FRA         |
+| Raphaël   | Varane    |    191 | FRA         |
+| Clément   | Lenglet   |    186 | FRA         |
+| Lucas     | Hernández |    182 | FRA         |
+| Stéphane  | Ruffier   |    188 | FRA         |
+| Paul      | Pogba     |    191 | FRA         |
+| Hugo      | Lloris    |    188 | FRA         |
+| Aymeric   | Laporte   |    189 | FRA         |
+| Karim     | Benzema   |    185 | FRA         |
+| Samuel    | Umtiti    |    182 | FRA         |
+| Raphaël   | Varane    |    191 | FRA         |
+| Clément   | Lenglet   |    186 | FRA         |
+| Lucas     | Hernández |    182 | FRA         |
+| Stéphane  | Ruffier   |    188 | FRA         |
++-----------+-----------+--------+-------------+
+18 rows in set (0.04 sec)
+
+<p> <b>
+mysql> select FirstName, LastName, Height, Nationality
+    -> from player_table3
+    -> where Height > 180 or nationality = "FRA"; 
+</p> </b>
++-------------------+------------------+--------+-------------+
+| FirstName         | LastName         | Height | Nationality |
++-------------------+------------------+--------+-------------+
+| Cristiano Ronaldo | dos Santos       |    187 | PRT         |
+| Jan               | Oblak            |    188 | SGP         |
+| Kevin             | De Bruyne        |    181 | BLX         |
+| Marc-André        | ter Stegen       |    187 | DEU         |
+| Virgil            | van Dijk         |    193 | NPL         |
+
+<p> <b>
+
+mysql> ### (7) using the BETWEEN operator; dated 4-2-2023
+mysql> select FirstName, LastName, Age
+    -> from player_table3
+    -> where Age between 30 and 40;
+
+</p> </b>
++-------------------+------------------+------+
+| FirstName         | LastName         | Age  |
++-------------------+------------------+------+
+| Lionel Andrés     | Messi            |   32 |
+| Cristiano Ronaldo | dos Santos       |   34 |
+| Luka              | Modri?           |   33 |
+| Giorgio           | Chiellini        |   34 |
+| Sergio            | Agüero           |   31 |
+| Sergio            | Ramos            |   33 |
+| Luis              | Alberto          |   32 |
+| Robert            | Lewandowski      |   30 |
+| Sergio            | Busquets         |   30 |
+| Gerard            | Piqué            |   32 |
+| Samir             | Handanovi?       |   34 |
+| Manuel            | Neuer            |   33 |
+| Hugo              | Lloris           |   32 | 
+…
+
+<p> <b>
+
+mysql> ### (8) IN/NOT IN operators
+mysql> ### to obtain the list of players in "FC barcelona" or "Real madrid".
+mysql> select FirstName, LastName, Age, Club
+    -> from player_table3
+    -> where Club in ('FC Barcelona', 'Real Madrid');
+
+</p> </b>
+
++---------------+------------+------+--------------+
+| FirstName     | LastName   | Age  | Club         |
++---------------+------------+------+--------------+
+| Lionel Andrés | Messi      |   32 | FC Barcelona |
+| Eden          | Hazard     |   28 | Real Madrid  |
+| Marc-André    | ter Stegen |   27 | FC Barcelona |
+| Luka          | Modri?     |   33 | Real Madrid  |
+| Sergio        | Ramos      |   33 | Real Madrid  |
+| Luis          | Alberto    |   32 | FC Barcelona |
+| Sergio        | Busquets   |   30 | FC Barcelona |
+| Antoine       | Griezmann  |   28 | FC Barcelona |
+
+<p> <b>
+
+mysql> ### (9) LIKE-NOT LIKE operators
+mysql> ## used for searching for a specific pattern
+mysql> select FirstName, LastName
+    -> from player_table3
+    -> where FirstName like 's%';   #### list of players whose first name starts with 's'
+
+</p> </b>
++-----------+------------------+
+| FirstName | LastName         |
++-----------+------------------+
+| Sergio    | Agüero           |
+| Sergio    | Ramos            |
+| Sergio    | Busquets         |
+| Samir     | Handanovi?       |
+| Sadio     | Mané             |
+| Samuel    | Umtiti           |
+| Sergej    | Milinkovi?-Savi? |
+| Saúl      | Ñíguez           |
+| Serge     | Gnabry           |
+| Stefan    | de Vrij          |
+| Stéphane  | Ruffier          |
+| Salvatore | Sirigu           |
+| Sokratis  | Papastathopoulos |
+| Sergio    | Canales
+
+<p> <b>
+
+mysql> ### End of demo ###
+
+</p> </b>
+</p>
+</article>
